@@ -1,13 +1,13 @@
-import { Suspense } from 'react'
-import AppClient from './AppClient'
+// app/app/page.tsx
+import dynamic from 'next/dynamic'
 
-export const dynamic = 'force-dynamic' // avoids static prerender hiccups
+// stop static prerendering attempts
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
-export default function Page(){
-  return (
-    <Suspense fallback={<div className="container py-8">Loading…</div>}>
-      <AppClient />
-    </Suspense>
-  )
+// Load the client UI only in the browser
+const AppClient = dynamic(() => import('./AppClient'), { ssr: false })
+
+export default function Page() {
+  return <AppClient />
 }
-
