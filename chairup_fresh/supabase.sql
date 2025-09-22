@@ -1,0 +1,2 @@
+-- (same schema as provided earlier in the chat)
+-- Paste from the message if you need the full script again.
