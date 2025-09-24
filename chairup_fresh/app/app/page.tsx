@@ -1,13 +1,24 @@
 // app/app/page.tsx
-import dynamic from 'next/dynamic'
+'use client'
+import { useEffect, useState } from 'react'
 
-// stop Next from prerendering this route
+// stop Next from trying to statically render or cache this page
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-// Load the client UI only in the browser (no SSR, no prerender)
-const AppClient = dynamic(() => import('./AppClient'), { ssr: false })
-
 export default function Page() {
-  return <AppClient />
+  const [Comp, setComp] = useState<null | React.ComponentType>(null)
+
+  useEffect(() => {
+    let mounted = true
+    import('./AppClient').then(mod => {
+      if (mounted) setComp(() => mod.default)
+    })
+    return () => { mounted = false }
+  }, [])
+
+  if (!Comp) {
+    return <div className="container py-8">Loading…</div>
+  }
+  return <Comp />
 }
